@@ -1,0 +1,55 @@
+version: "3"
+
+services:
+  nginx:
+    build: ./requirements/nginx
+    image: nginx
+    depends_on :
+      - wordpress
+    restart: always
+    ports:
+      - "443:443"
+    networks:
+      - inception_network
+    volumes:
+      - wp_volume:/var/www/
+  
+  mariadb:
+    build: ./requirements/mariadb/
+    image: mariadb
+    restart: always
+    expose:
+      - "3306"
+    networks:
+      - inception_network
+    volumes:
+      - wp_volume:/var/www/
+      
+  wordpress:
+    build: ./requirements/wordpress/
+    image: wordpress
+    depends_on :
+      - mariadb
+    restart: always
+    expose:
+      - "9000"
+    networks:
+      - inception_network
+    volumes:
+      - db_volume:/var/lib/mysql/
+
+networks:
+  inception_network:
+
+volumes:
+    db_volume:
+      driver_opts:
+        type: volume
+        o : 'bind'
+        device: '/Users/bagjaeu/data/database'
+
+    wp_volume:
+      driver_opts:
+        type: volume
+        o : 'bind'
+        device: '/Users/bagjaeu/data/wordpress'

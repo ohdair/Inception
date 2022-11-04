@@ -1,0 +1,29 @@
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    server_name jaewpark.42.fr;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+
+    ssl_certificate /etc/ssl/certs/nginx.crt;
+    ssl_certificate_key /etc/ssl/private/nginx.key;
+
+    root /var/www/wordpress;
+
+    index index.php
+
+    # root폴더 내에 uri에 따른 폴더가 있는지 찾아보고 없다면 404 에러 리턴
+    location / {
+		try_files $uri $uri/ =404;
+	}
+
+    # fastcgi_pass : php-fpm(wordpress) 의 ip 와 port 로 패스를 설정, 다른 컨테이너를 사용하기 때문에 tcp/ip통신을 이용해야함(ip와 port번호 필요)
+    # include fastcgi_params : Nginx 빌드에서 미리 설정된 파라미터들을 사용
+    # fastcgi_param : FastCGI 프로토콜을 사용할 때 사용할 파라미터를 설정, 사용자의 요청을 실행할 스크립트 경로 설정
+	location ~ \.php$ {
+		fastcgi_pass wordpress:9000;
+		include fastcgi_params;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+	}
+}
