@@ -1,55 +1,59 @@
-version: "3"
+version : '3.0'
 
 services:
   nginx:
-    build: ./requirements/nginx
+    build: ./requirements/nginx/
     image: nginx
+    restart: always
+    volumes:
+      - wp_volume:/var/www/html/wordpress
     depends_on :
       - wordpress
-    restart: always
     ports:
       - "443:443"
     networks:
       - inception_network
-    volumes:
-      - wp_volume:/var/www/
-  
   mariadb:
     build: ./requirements/mariadb/
     image: mariadb
     restart: always
     expose:
       - "3306"
+    volumes:
+      - db_volume:/var/lib/mysql/   # [호스트 디렉토리]:[컨테이너 디렉토리]
+    env_file:
+      - .env
     networks:
       - inception_network
-    volumes:
-      - wp_volume:/var/www/
-      
   wordpress:
     build: ./requirements/wordpress/
     image: wordpress
+    restart: always
     depends_on :
       - mariadb
-    restart: always
     expose:
       - "9000"
+    volumes:
+      - wp_volume:/var/www/html/wordpress
+    env_file:
+      - .env
     networks:
       - inception_network
-    volumes:
-      - db_volume:/var/lib/mysql/
+
 
 networks:
   inception_network:
-
+    driver: bridge
 volumes:
     db_volume:
-      driver_opts:
+      driver_opts:    # driver_opts: linux 명령어 mount에 의존한다.
         type: volume
-        o : 'bind'
-        device: '/Users/bagjaeu/data/database'
-
+        o : bind    # volume을 bind로 묶어줘야 docker가 내 volume을 찾을 수 있다.
+        device: /Users/bagjaeu/Inception/data/database    # 맥에서 테스트
+        # device: /home/jaewpark/data/mariadb
     wp_volume:
       driver_opts:
         type: volume
-        o : 'bind'
-        device: '/Users/bagjaeu/data/wordpress'
+        o : bind
+        device: /Users/bagjaeu/Inception/data/wordpress   # 맥에서 테스트
+        # device: /home/jaewpark/data/wordpress

@@ -4,8 +4,8 @@ RUN apt update && apt install -y nginx openssl
 
 RUN openssl req -newkey rsa:2048 -days 365 -x509 -nodes \
     -subj "/C=KR/ST=Seoul/L=Seoul/O=42Seoul/OU=Gam/CN=localhost" \
-    -out /etc/ssl/certs/nginx.crt \
-    -keyout /etc/ssl/private/nginx.key
+    -out /etc/ssl/certs/server.crt \
+    -keyout /etc/ssl/private/server.key
 
 # COPY ./conf/default.conf /etc/nginx/conf.d/default.conf
 COPY ./conf/default /etc/nginx/sites-available/default

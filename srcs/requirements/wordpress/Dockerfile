@@ -20,9 +20,9 @@ FROM debian:buster
 COPY ./tools/setup.sh /tmp/
 COPY ./conf/wp-config.php /tmp/
 
-RUN  apt update && apt install -y php7.3-fpm php-mysql tar wget
+RUN  apt update && apt install -y php7.3-fpm php-mysql tar wget curl 
 
-COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d
+COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d/www.conf
 
 RUN  wget https://wordpress.org/latest.tar.gz
 RUN  tar xzvf latest.tar.gz

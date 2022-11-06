@@ -1,64 +1,29 @@
-all : up
+NAME = Inception
+UNAME	:= $(shell uname -s)
+ifeq ($(UNAME),Darwin)	#macOS
+	DB_PATH		:= ./data
+	HOST_LINK	:=
+else					#Linux
+	DB_PATH		:= /home/jisokang/data
+	HOST_LINK	:= "127.0.0.1	jisokang.42.fr" > /etc/hosts
+endif
 
-# sudo date -s "$$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | cut -d' ' -f5-8)Z"
-up :
-	sudo mkdir -p ${HOME}/data/wordpress ${HOME}/data/database
-	sudo docker-compose -f srcs/docker-compose.yml up -d --build
-	sudo cp -rp ./srcs/requirements/nginx/conf/hosts /etc/hosts
-	sudo chmod 777 /etc/hosts
+all:	$(NAME)
 
-down :
-	sudo docker-compose -f srcs/docker-compose.yml down
+$(NAME):
+	mkdir -p $(DB_PATH)/mariadb/ $(DB_PATH)/wordpress/
+	docker-compose -f ./srcs/docker-compose.yml up --build
 
-fdown :
-	sudo docker stop $$(sudo docker ps -a -q)
-	sudo docker rm $$(sudo docker ps -a -q)
-	sudo docker rmi -f $$(sudo docker images -q)
-	sudo docker system prune -f
-	sudo rm -rf ${HOME}/data /etc/hosts
+down:
+	docker-compose -f ./srcs/docker-compose.yml down
 
-ps :
-	sudo docker-compose -f srcs/docker-compose.yml ps
+clean:
+	docker-compose -f srcs/docker-compose.yml down --rmi all --volumes
 
-stop_wp :
-	sudo docker stop c_wordpress
-	sudo docker rm c_wordpress
-	sudo docker rmi -f wordpress
-	sudo rm -rf ${HOME}/data/wordpress
+fclean: clean
+	rm -rf /Users/bagjaeu/Inception/data/*
+# rm -rf $(DB_PATH)/mariadb/* $(DB_PATH)/wordpress/*
 
-exec_db :
-	sudo docker exec -it c_mariadb bash
+re: fclean all
 
-exec_wp :
-	sudo docker exec -it c_wordpress bash
-
-exec_nx :
-	sudo docker exec -it c_nginx bash
-
-log_db :
-	sudo docker logs -t c_mariadb
-
-log_nx :
-	sudo docker logs -t c_nginx
-
-log_wp :
-	sudo docker logs -t c_wordpress
-
-# NAME = Inception
-
-# all:	$(NAME)
-
-# $(NAME):
-# 	sudo mkdir -p ${HOME}/data/wordpress ${HOME}/data/database
-# 	docker-compose -f srcs/docker-compose.yml up --build -d
-
-# up:
-# 	docker-compose -f srcs/docker-compose.yml up -d
-
-# down:
-# 	docker-compose -f srcs/docker-compose.yml down
-
-# clean:
-# 	docker-compose -f srcs/docker-compose.yml down --rmi all --volumes
-
-# .PHONY: all up down clean
+.PHONY: all down clean fclean re

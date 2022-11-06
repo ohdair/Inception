@@ -2,19 +2,18 @@ server {
     listen 443 ssl;
     listen [::]:443 ssl;
 
-    server_name jaewpark.42.fr;
-
+    ssl on;
     ssl_protocols TLSv1.2 TLSv1.3;
-
-    ssl_certificate /etc/ssl/certs/nginx.crt;
-    ssl_certificate_key /etc/ssl/private/nginx.key;
+	ssl_certificate /etc/ssl/certs/server.crt;
+	ssl_certificate_key /etc/ssl/private/server.key;
 
     root /var/www/wordpress;
 
-    index index.php
+    index index.php index.html index.htm;
 
     # root폴더 내에 uri에 따른 폴더가 있는지 찾아보고 없다면 404 에러 리턴
     location / {
+        autoindex on;
 		try_files $uri $uri/ =404;
 	}
 
