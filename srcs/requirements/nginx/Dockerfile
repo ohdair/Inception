@@ -8,7 +8,7 @@ RUN openssl req -newkey rsa:2048 -days 365 -x509 -nodes \
     -keyout /etc/ssl/private/server.key
 
 # COPY ./conf/default.conf /etc/nginx/conf.d/default.conf
-COPY ./conf/default /etc/nginx/sites-available/default
+COPY ./conf/default.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 443
 

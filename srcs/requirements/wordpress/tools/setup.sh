@@ -1,13 +1,16 @@
 #!bin/bash
 
-rm -rf latest.tar.gz
-mkdir /var/www/
-mv -f /wordpress/ /var/www/
-cp -rf ./tmp/wp-config.php /var/www/wordpress/
-chown -R www-data:www-data /var/www/wordpress/
+chown -R www-data:www-data /var/www/
 
-# Unable to create the PID file (/run/php/php7.3-fpm.pid) 계속 이런 에러 떠서 추가함
-mkdir -p /run/php/
+if [ ! -f "/var/www/html/wordpress/index.php" ]; then
+	sudo -u www-data sh -c " \
+	wp core download --locale=$WORDPRESS_LANG && \
+	wp config create --dbname=$WORDPRESS_DB_HOST --dbuser=$WORDPRESS_DB_USER --dbpass=$WORDPRESS_DB_PASSWORD --dbhost=$WORDPRESS_DB_HOST --dbcharset="utf8"
+	wp core install --url=$DOMAIN_NAME --title=$WORDPRESS_TITLE --admin_user=$WORDPRESS_DB_ADMIN --admin_password=$WORDPRESS_DB_ADMIN_PASSWORD --admin_email=$WORDPRESS_DB_ADMIN_EMAIL --skip-email && \
+	wp user create $WORDPRESS_USER $WORDPRESS_EMAIL --role=author --user_pass=$WORDPRESS_PASSWORD && \
+	wp plugin update --all
+	"
+fi
 
 # php-fpm을 foreground에서 실행시키겠다. foreground에서 실행안하면 container가 계속 exited 으로 바뀜
-exec php-fpm7.3 -F
+exec /usr/sbin/php-fpm7.3 -F
