@@ -1,11 +1,12 @@
 FROM debian:buster
 
-RUN apt update && apt install -y mariadb-server
+LABEL writer="jaewpark@student.42seoul.kr"
 
-COPY tools/setup_mariadb.sh /tmp/setup_mariadb.sh
-COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
-# COPY ./conf/wp_dump.sql ./
+RUN apt update && apt install -y mariadb-server mariadb-client
+
+COPY ./tools/setup_mariadb.sh /tmp/setup_mariadb.sh
+COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/
 
 EXPOSE 3306
 
-CMD ["sh", "./setup_mariadb.sh"]
+CMD ["sh", "./tmp/setup_mariadb.sh"]

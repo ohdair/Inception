@@ -4,15 +4,16 @@ ifeq ($(UNAME),Darwin)	#macOS
 	DB_PATH		:= ./data
 	HOST_LINK	:=
 else					#Linux
-	DB_PATH		:= /home/jisokang/data
-	HOST_LINK	:= "127.0.0.1	jisokang.42.fr" > /etc/hosts
+	DB_PATH		:= /home/jaewpark/data
+	HOST_LINK	:= "127.0.0.1	jaewpark.42.fr" > /etc/hosts
 endif
 
 all:	$(NAME)
 
 $(NAME):
-	mkdir -p $(DB_PATH)/mariadb/ $(DB_PATH)/wordpress/
-	docker-compose -f ./srcs/docker-compose.yml up --build
+	mkdir -p $(DB_PATH)/mariadb/
+	mkdir -p $(DB_PATH)/wordpress/
+	sudo docker-compose -f ./srcs/docker-compose.yml up --build
 
 down:
 	docker-compose -f ./srcs/docker-compose.yml down
@@ -22,6 +23,7 @@ clean:
 
 fclean: clean
 	rm -rf /Users/bagjaeu/Inception/data/*
+	rm -rf /Users/bagjaeu/Inception/data
 # rm -rf $(DB_PATH)/mariadb/* $(DB_PATH)/wordpress/*
 
 re: fclean all
