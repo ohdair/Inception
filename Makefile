@@ -13,7 +13,7 @@ all:	$(NAME)
 $(NAME):
 	mkdir -p $(DB_PATH)/mariadb/
 	mkdir -p $(DB_PATH)/wordpress/
-	sudo docker-compose -f ./srcs/docker-compose.yml up --build
+	docker-compose -f ./srcs/docker-compose.yml up --build
 
 down:
 	docker-compose -f ./srcs/docker-compose.yml down
@@ -24,7 +24,7 @@ clean:
 fclean: clean
 	rm -rf $(DB_PATH)/mariadb/* $(DB_PATH)/wordpress/*
 # rm -rf /Users/bagjaeu/Inception/data/*
-# rm -rf /Users/bagjaeu/Inception/data
+# rm -rf /Users/bagjaeu/Inception/data/*
 
 re: fclean all
 
