@@ -1,18 +1,11 @@
 NAME = Inception
-UNAME	:= $(shell uname -s)
-ifeq ($(UNAME),Darwin)	#macOS
-	DB_PATH		:= ./data
-	HOST_LINK	:=
-else					#Linux
-	DB_PATH		:= /home/jaewpark/data
-	HOST_LINK	:= "127.0.0.1	jaewpark.42.fr" > /etc/hosts
-endif
 
 all:	$(NAME)
 
 $(NAME):
-	mkdir -p $(DB_PATH)/mariadb/
-	mkdir -p $(DB_PATH)/wordpress/
+	mkdir -p /home/jaewpark/data/mariadb/
+	mkdir -p /home/jaewpark/data/wordpress/
+	cp ./srcs/requirements/nginx/conf/hosts /etc/hosts
 	docker-compose -f ./srcs/docker-compose.yml up --build
 
 down:
@@ -22,9 +15,7 @@ clean:
 	docker-compose -f srcs/docker-compose.yml down --rmi all --volumes
 
 fclean: clean
-	rm -rf $(DB_PATH)/mariadb/* $(DB_PATH)/wordpress/*
-# rm -rf /Users/bagjaeu/Inception/data/*
-# rm -rf /Users/bagjaeu/Inception/data/*
+	rm -rf /home/jaewpark/data/mariadb/* /home/jaewpark/data/wordpress/*
 
 re: fclean all
 

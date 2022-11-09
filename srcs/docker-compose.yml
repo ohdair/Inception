@@ -13,7 +13,6 @@ services:
       - "443:443"
     networks:
       - inception_network
-    tty: true
   mariadb:
     build: ./requirements/mariadb/
     image: mariadb
@@ -26,7 +25,6 @@ services:
       - .env
     networks:
       - inception_network
-    tty: true
   wordpress:
     build: ./requirements/wordpress/
     image: wordpress
@@ -42,7 +40,6 @@ services:
     networks:
       - inception_network
 
-
 networks:
   inception_network:
     driver: bridge
@@ -52,13 +49,11 @@ volumes:
       driver: local
       driver_opts:    # driver_opts: linux 명령어 mount에 의존한다.
         type: none
-        # device: /Users/bagjaeu/Inception/data/mariadb    # 맥에서 테스트
         device: /home/jaewpark/data/mariadb
         o : bind    # volume을 bind로 묶어줘야 docker가 내 volume을 찾을 수 있다.
     wp_volume:
       driver: local
       driver_opts:
         type: none
-        # device: /Users/bagjaeu/Inception/data/wordpress   # 맥에서 테스트
         device: /home/jaewpark/data/wordpress
         o : bind
