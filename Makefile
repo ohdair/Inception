@@ -22,9 +22,9 @@ clean:
 	docker-compose -f srcs/docker-compose.yml down --rmi all --volumes
 
 fclean: clean
-	rm -rf /Users/bagjaeu/Inception/data/*
-	rm -rf /Users/bagjaeu/Inception/data
-# rm -rf $(DB_PATH)/mariadb/* $(DB_PATH)/wordpress/*
+	rm -rf $(DB_PATH)/mariadb/* $(DB_PATH)/wordpress/*
+# rm -rf /Users/bagjaeu/Inception/data/*
+# rm -rf /Users/bagjaeu/Inception/data
 
 re: fclean all
 
